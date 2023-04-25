@@ -8,7 +8,12 @@ models/MobileFaceNet/mobilefacenet_insightface_paddle
 models/MobileFaceNet/MobileFaceNet_TF
 
 ### Custom datasets ###
-
+data/*
+# !.vscode/settings.json
+!data/download_lfw.sh
+!data/readme.txt
+!subset_lfw.sh
+!data/subset_lfw_relative_path.sh
 
 ### JupyterNotebooks ###
 # gitignore template for Jupyter Notebooks
@@ -243,7 +248,7 @@ pyrightconfig.json
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
+# !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
