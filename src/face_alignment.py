@@ -82,6 +82,7 @@ class ArcFaceAlignment:
     def norm_crop(self, img, landmark, image_size=112, mode="arcface"):
         # landmark has to be absolute landmarks in integers!!!!
         M, pose_index = self.estimate_norm(landmark, image_size, mode)
+        img_shape = img.shape
         warped = cv2.warpAffine(
             img, M, (image_size, image_size), borderValue=0.0, flags=cv2.INTER_CUBIC
         )
