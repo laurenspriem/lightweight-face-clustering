@@ -338,3 +338,32 @@ class BlazeFaceResults:
             f"  keypoints={self.keypoints}  # [x, y] coordinates for each (of 6) keypoints (left eye, right eye, nose tip, mouth, left eye tragion, right eye tragion)\n"
             f")"
         )
+
+    def get_face_count(self):
+        return len(self.boxes)
+
+    def get_largest_face(self):
+        if len(self.boxes) == 0:
+            return None  # No faces detected
+
+        max_area = 0
+        largest_face_index = -1
+
+        for i, box in enumerate(self.boxes):
+            xmin, ymin, xmax, ymax = box
+            area = (xmax - xmin) * (ymax - ymin)
+
+            if area > max_area:
+                max_area = area
+                largest_face_index = i
+
+        if largest_face_index == -1:
+            return (
+                None  # No largest face found, should not happen unless boxes is empty
+            )
+
+        return BlazeFaceResults(
+            boxes=np.array([self.boxes[largest_face_index]]),
+            scores=np.array([self.scores[largest_face_index]]),
+            keypoints=np.array([self.keypoints[largest_face_index]]),
+        )
