@@ -15,8 +15,8 @@ class MobileFaceNet:
         # Initialize model based on model type
         self.input_details = None
         self.input_batch_size = None
-        self.input_height = None
-        self.input_width = None
+        self.input_height = None # will be 112
+        self.input_width = None # will be 112
         self.channels = None
         self.output_details = None
         self.initialize_model(model_type)
