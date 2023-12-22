@@ -8,19 +8,35 @@ from skimage.transform import SimilarityTransform
 
 
 class ArcFaceAlignment:
-    def __init__(self):
-        self.arcface_src = np.expand_dims(
-            np.array(
-                [
-                    [38.2946, 51.6963],
-                    [73.5318, 51.5014],
-                    [56.0252, 71.7366],
-                    [56.1396, 92.2848],
-                ],
-                dtype=np.float32,
-            ),
-            axis=0,
-        )
+    def __init__(self, landmarks=4):
+        self.landmarks = landmarks
+        if landmarks == 4:
+            self.arcface_src = np.expand_dims(
+                np.array(
+                    [
+                        [38.2946, 51.6963],
+                        [73.5318, 51.5014],
+                        [56.0252, 71.7366],
+                        [56.1396, 92.2848],
+                    ],
+                    dtype=np.float32,
+                ),
+                axis=0,
+            )
+        if landmarks == 5:
+            self.arcface_src = np.expand_dims(
+                np.array(
+                    [
+                        [38.2946, 51.6963],
+                        [73.5318, 51.5014],
+                        [56.0252, 71.7366],
+                        [41.5493, 92.3655],
+                        [70.7299, 92.2041],
+                    ],
+                    dtype=np.float32,
+                ),
+                axis=0,
+            )
 
     def crop_and_align(self, image, face_detection_result):
         if image.ndim == 4:
@@ -30,7 +46,7 @@ class ArcFaceAlignment:
         warped_faces = []
         for keypoints in face_detection_result.keypoints:
             # Get the absolute face landmarks
-            landmarks_absolute_full = keypoints[:4]
+            landmarks_absolute_full = keypoints[: self.landmarks]
             landmarks_absolute_full[:, 0] *= w
             landmarks_absolute_full[:, 1] *= h
             landmarks_absolute_full = landmarks_absolute_full.astype(np.int32)
@@ -53,9 +69,9 @@ class ArcFaceAlignment:
 
     def estimate_norm(self, lmk, image_size=112, mode="arcface"):
         # lmk is prediction; src is template
-        assert lmk.shape == (4, 2)
+        assert lmk.shape == (self.landmarks, 2)
         tform = SimilarityTransform()
-        lmk_tran = np.insert(lmk, 2, values=np.ones(4), axis=1)
+        lmk_tran = np.insert(lmk, 2, values=np.ones(self.landmarks), axis=1)
         min_M = []
         min_index = []
         min_error = float("inf")
