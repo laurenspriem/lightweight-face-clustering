@@ -2,9 +2,10 @@
 Module for feature extraction (embeddings) with MobileFaceNet model.
 """
 
+import logging
+import time
 import tensorflow as tf
 import numpy as np
-import logging
 import cv2
 
 
@@ -62,14 +63,23 @@ class MobileFaceNet:
         self.output_batch_size = output_shape[0]
         self.output_embedding_size = output_shape[1]
 
-    def extract_embedding(self, image, bounding_boxes=None, prewhiten=False):
+    def extract_embedding(self, image, bounding_boxes=None, prewhiten=False, print_time=False, return_time=False):
         """Extract embedding from image"""
         # TODO: Add support for batch inference (is possible for this model!)
         # Prepare image for inference
         input_tensor = self.preprocess_input(image, bounding_boxes, prewhiten)
 
         # Perform inference on the image
+        start_time = time.time()
         output = self.inference(input_tensor)
+        end_time = time.time()
+        inference_time = (end_time - start_time) * 1000  # Convert to milliseconds
+
+        if print_time:
+            print(f"Inference time: {inference_time} milliseconds")
+
+        if return_time:
+            return output, inference_time
 
         return output
 
